@@ -20,12 +20,12 @@
                                 <div class="container">
                                     <div class="row">
                                         <div class="col">
-                                            <input type="radio" name="role" class="form-control-sm" id="role" value="admin">
-                                            <label for="name">Admin</label>
+                                            <label for="role">Admin</label>
+                                            <input type="radio" name="role" class="form-control-sm" id="role1" value="admin">
                                         </div>
                                         <div class="col">
-                                            <input type="radio" name="role" class="form-control-sm" id="role" value="std">
-                                            <label for="name">Semplice</label>
+                                            <label for="role2">Semplice</label>
+                                            <input type="radio" name="role" class="form-control-sm" id="role2" value="std">
                                         </div>
                                     </div>
                                 </div>
@@ -61,11 +61,33 @@
             </div>
             <div class="col-8">
                 <div class="row">
-                    @forelse ($listautenti as $user)
-                        <li>{{ $user->nome}}</li>
-                    @empty
-                        <p>No utenti presenti</p>
-                    @endforelse
+
+                    @if($listautenti->isEmpty())
+                        <p>Non ci sono utenti presenti</p>
+                    @else
+                        <table class="table">
+                            <thead>
+                            <tr>
+                            <th>Nome</th>
+                            <th>Cognome</th>
+                            <th>Email</th>
+                            <th>Ruolo</th>
+                            <th>Elimina</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            @foreach($listautenti as $user)
+                            <tr>
+                                <td>{{$user->nome}}</td>
+                                <td>{{$user->cognome}}</td>
+                                <td>{{$user->email}}</td>
+                                <td>{{$user->is_admin === 0 ? "Utente semplice" : "Amministratore"}}</td>
+                                <td><button class="btn btn-danger">Elimina</button> </td>
+                            </tr>
+                            @endforeach
+                            </tbody>
+                        </table>
+                    @endif
                 </div>
             </div>
         </div>
