@@ -17,7 +17,6 @@
                             @csrf
                             <div class="form-group">
                                 Ruolo
-                                <div class="container">
                                     <div class="row">
                                         <div class="col">
                                             <label for="role">Admin</label>
@@ -28,7 +27,6 @@
                                             <input type="radio" name="role" class="form-control-sm" id="role2" value="std">
                                         </div>
                                     </div>
-                                </div>
                             </div>
                             <div class="form-group">
                                 <label for="email">Email</label>
