@@ -79,7 +79,8 @@
                                 <td>{{$user->nome}}</td>
                                 <td>{{$user->cognome}}</td>
                                 <td>{{$user->email}}</td>
-                                <td>{{$user->is_admin === 0 ? "Utente semplice" : "Amministratore"}}</td>
+                                <td>{{$user->is_admin == 0 ? "Utente semplice" : "Amministratore"}}</td>
+                                <!--<td><a href=""></a>></td>>!-->
                                 <td><button class="btn btn-danger">Elimina</button> </td>
                             </tr>
                             @endforeach
