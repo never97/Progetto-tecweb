@@ -16,10 +16,11 @@ class CreateSchedeOreTable extends Migration
         Schema::create('schede_ore', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
+            $table->date('data_odierna');
             $table->integer('ore_unitarie')->default(1);
             $table->text('note')->nullable();
             $table->foreignId('user_id')->constrained('users');
-            $table->foreignId('progetti_id')->constrained('progetti');
+            $table->foreignId('progetto_id')->constrained('progetti');
         });
     }
 

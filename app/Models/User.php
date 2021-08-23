@@ -54,4 +54,16 @@ class User extends Authenticatable
     {
         return $this->is_admin;
     }
+    public function schedaore()
+    {
+        return $this->hasMany('App\Models\SchedaOre');
+    }
+    public function assegnazione()
+    {
+        return $this->hasMany('App\Models\Assegnazione');
+    }
+
+    public function progetti() {
+        return $this->belongsToMany("App\Models\Progetto", "assegnazioni", "user_id", "progetto_id");
+    }
 }

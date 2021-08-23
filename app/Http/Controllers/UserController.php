@@ -18,26 +18,39 @@ class UserController extends Controller
     public function index()
     {
         $users = User::all();
-        return view('users', ['listautenti' => $users]);
+        return view('user.index', ['listautenti' => $users]);
     }
     public function edit(User $user)
     {
         return view('user.edit', compact('user'));
     }
-    public function destroy(User $user)
+    public function show(User $user)
     {
-        $user->delete();
-
+        //
+    }
+    public function update(Request $request, User $user) {
+        $user->nome = $request->input('nome');
+        $user->cognome = $request->input('cognome');
+        $user->is_admin = ($request->input('role') === "admin");
+        $user->email = $request->input('email');
+        $user->password = Hash::make($request->input('password'));
+        $user->save();
         return redirect('/user');
     }
+    public function destroy($id)
+    {
+        $user = User::where('id', $id);
+        $user->delete();
+        return json_encode(['status' => 'ok']);
+    }
 
-    public function save(Request $request)
+    public function store(Request $request)
     {
         //validate
         $validator = Validator::make($request->all(), [
 
         //request()->validate([
-           'role' => 'required|max:10',
+           'role' => 'required',
            'email' => 'required|email|max:60|unique:users,email',
            'password'=> 'required|min:8|max:50',
            'nome' => 'required|min:2|max:50',
@@ -56,7 +69,7 @@ class UserController extends Controller
             $user->nome = $request->input('nome');
             $user->cognome = $request->input('cognome');
             $user->save();
-            return redirect()->route('user');
+            return redirect()->route('user.index');
         }
 
     }

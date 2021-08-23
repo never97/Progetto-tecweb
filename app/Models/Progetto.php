@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Date;
 
 /**
  * @property int    $created_at
@@ -37,7 +38,7 @@ class Progetto extends Model
      * @var array
      */
     protected $fillable = [
-        'created_at', 'updated_at', 'nome', 'descrizione', 'note', 'data_inizio_prevista', 'data_fine_prevista', 'data_fine_effettiva', 'costo_orario', 'cliente_id'
+        'created_at', 'updated_at','nome', 'descrizione', 'note', 'data_inizio_prevista', 'data_fine_prevista', 'data_fine_effettiva', 'costo_orario',
     ];
 
     /**
@@ -55,7 +56,7 @@ class Progetto extends Model
      * @var array
      */
     protected $casts = [
-        'created_at' => 'timestamp', 'updated_at' => 'timestamp', 'nome' => 'string', 'descrizione' => 'string', 'note' => 'string', 'data_inizio_prevista' => 'date', 'data_fine_prevista' => 'date', 'data_fine_effettiva' => 'int', 'costo_orario' => 'double'
+        'created_at' => 'timestamp', 'updated_at' => 'timestamp','nome' => 'string', 'descrizione' => 'string', 'note' => 'string', 'data_inizio_prevista' => 'date', 'data_fine_prevista' => 'date', 'data_fine_effettiva' => 'date', 'costo_orario' => 'double'
     ];
 
     /**
@@ -79,4 +80,18 @@ class Progetto extends Model
     // Functions ...
 
     // Relations ...
+
+    public function cliente()
+    {
+        return $this->belongsTo('App\Models\Cliente');
+    }
+    public function schedaore()
+    {
+        return $this->hasMany('App\Models\SchedaOre');
+    }
+    public function assegnazione()
+    {
+        return $this->hasMany('App\Models\Assegnazione');
+    }
+
 }

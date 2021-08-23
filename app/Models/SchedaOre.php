@@ -3,10 +3,12 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Date;
 
 /**
  * @property int    $created_at
  * @property int    $updated_at
+ * @property Date   $data_odierna
  * @property int    $ore_unitarie
  * @property string $note
  */
@@ -32,7 +34,7 @@ class SchedaOre extends Model
      * @var array
      */
     protected $fillable = [
-        'created_at', 'updated_at', 'ore_unitarie', 'note', 'user_id', 'progetti_id'
+        'created_at', 'updated_at', 'data_odierna','ore_unitarie', 'note'
     ];
 
     /**
@@ -50,7 +52,7 @@ class SchedaOre extends Model
      * @var array
      */
     protected $casts = [
-        'created_at' => 'timestamp', 'updated_at' => 'timestamp', 'ore_unitarie' => 'int', 'note' => 'string'
+        'created_at' => 'timestamp', 'updated_at' => 'timestamp', 'data_odierna' => 'date', 'ore_unitarie' => 'int', 'note' => 'string'
     ];
 
     /**
@@ -59,7 +61,7 @@ class SchedaOre extends Model
      * @var array
      */
     protected $dates = [
-        'created_at', 'updated_at'
+        'created_at', 'updated_at', 'data_odierna'
     ];
 
     /**
@@ -74,4 +76,13 @@ class SchedaOre extends Model
     // Functions ...
 
     // Relations ...
+    public function progetto()
+    {
+        return $this->belongsTo('App\Models\Progetto');
+    }
+    public function user()
+    {
+        return $this->belongsTo('App\Models\User');
+    }
+
 }

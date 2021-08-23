@@ -21,7 +21,7 @@ class CreateProgettiTable extends Migration
             $table->text('note')->nullable();
             $table->date('data_inizio_prevista');
             $table->date('data_fine_prevista');
-            $table->integer('data_fine_effettiva')->nullable();
+            $table->date('data_fine_effettiva')->nullable();
             $table->double('costo_orario')->default(1);
             $table->unsignedBigInteger('cliente_id');
             $table->foreign('cliente_id')->references('id')->on('clienti');

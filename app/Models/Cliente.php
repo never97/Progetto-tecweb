@@ -76,4 +76,8 @@ class Cliente extends Model
     // Functions ...
 
     // Relations ...
+    public function progetto()
+    {
+        return $this->hasMany('App\Models\Progetto');
+    }
 }

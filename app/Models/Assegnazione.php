@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Date;
 
 /**
  * @property int  $created_at
@@ -11,6 +12,7 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Assegnazione extends Model
 {
+
     /**
      * The database table used by the model.
      *
@@ -73,4 +75,13 @@ class Assegnazione extends Model
     // Functions ...
 
     // Relations ...
+
+    public function progetto()
+    {
+        return $this->belongsTo("App\Models\Progetto");
+    }
+    public function user()
+    {
+        return $this->belongsTo("App\Models\User");
+    }
 }
