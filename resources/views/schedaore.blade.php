@@ -2,6 +2,7 @@
 
 @push('scripts')
     <script>
+
         function editscheda(id) {
             fetch(`schedaore/${id}`, {method: "GET"})
                 .then(response => response.json())
@@ -13,7 +14,7 @@
                         $('#schedaoreForm input[name=note]').attr("value", data.note);
                         $('#schedaoreForm input[name=ore_unitarie]').attr("value", data.ore_unitarie);
                         $('#schedaoreForm input[name=id]').attr("value", id);
-                    }
+                    }else{alert("result");}
                 });
 
         }
@@ -24,9 +25,11 @@
         }
         function editAsync(event) {
             event.preventDefault();
+
             $("#schedaoreModal").modal('hide');
             const token = document.querySelector('meta[name="csrf-token"]').content
             let form = new FormData(document.getElementById('schedaoreForm'));
+
             fetch('schedaore/update', {
                 method: "PUT",
                 headers: {
@@ -35,13 +38,23 @@
                 },
                 body: JSON.stringify(Object.fromEntries(form))
             }).then(data => data.json())
+                .catch((error) => {
+                   //alert(JSON.stringify(Object.fromEntries(form)));
+                    $(document).ready(function() {
+                        $('#myModalError').modal('show');
+                    });
+                })
               .then(res => {
+
                   if(res.status === "ok") {
                       $('#sid'+ form.get('id')+ " .data_odierna").html(formattedDate(res.data_odierna));
                       $('#sid'+ form.get('id')+ " .ore_unitarie").html(res.ore_unitarie);
                       $('#sid'+ form.get('id')+ " .note").html(res.note);
-                      alert("Modificato");
-                  }
+                      //alert("Modificato");
+                      $(document).ready(function() {
+                          $('#myModal').modal('show');
+                      });
+                  }else{alert(result);}
               }
               );
         }
@@ -49,6 +62,7 @@
 @endpush
 
 @section('content')
+
 <div class="container">
     <div class="row justify-content-between">
         <div class="col-3">
@@ -106,6 +120,7 @@
                     <p>Non ci sono schede presenti</p>
                 @else
                     <h1> Tutte le schede </h1>
+                    </div>
                     <table class="table">
                         <thead>
                         <tr>
@@ -132,6 +147,8 @@
 
                             </tr>
                         @endforeach
+                        <div class="alert alert-success" style="display:none;" role="alert"></div>
+
                         </tbody>
                     </table>
                 @endif
@@ -150,7 +167,7 @@
                         </button>
                     </div>
                     <div class="modal-body">
-                        <form id="schedaoreForm" >
+                        <form id="schedaoreForm" onsubmit="return editAsync(event)">
                             @csrf
                             <input type="hidden" id="id" name="id"/>
                             <div class="form-group">
@@ -163,14 +180,17 @@
                             </div>
                             <div class="form-group">
                                 <label for="ore_unitarie">Ore</label>
-                                <input type="text" class="form-control" name="ore_unitarie" id="ore_unitarie1">
+                                <input required type="number" class="form-control" name="ore_unitarie" min="1" step="1" max="15" id="ore_unitarie1">
                             </div>
-                            <button type="submit" onclick="editAsync(event)" class="btn btn-primary">Salva</button>
+                            <button type="submit" onsubmit="return editAsync(event)" class="btn btn-primary">Salva</button>
+
+
                         </form>
                     </div>
                 </div>
             </div>
         </div>
+
         {{--
         <script type="text/javascript">
             $('document').ready(function(){
@@ -208,6 +228,42 @@
 
         </script>--}}
 
+    </div>
+</div>
+<div class="modal fade"  id="myModal"  tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog"  role="document">
+        <div class="modal-content" style="background-color: #75d58c;">
+            <div class="modal-header" style="border-bottom: black 1px solid";>
+                <h5 class="modal-title" id="exampleModalLabel color:green">Modifica completata!</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" >
+                Elemento modificato correttamente
+            </div>
+            <div class="modal-footer" style="border-top: black 1px solid";>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Chiudi</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade"  id="myModalError"  tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog"  role="document">
+        <div class="modal-content" style="background-color: red;">
+            <div class="modal-header" style="border-top: black 1px solid";>
+                <h5 class="modal-title" id="exampleModalLabel color:green">Attenzione</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" >
+                Ops! Sembra che tu abbia sbagliato ad inserire qualcosa
+            </div>
+            <div class="modal-footer" style="border-top: black 1px solid";>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Chiudi</button>
+            </div>
+        </div>
     </div>
 </div>
 
