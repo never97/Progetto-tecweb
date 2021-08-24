@@ -96,13 +96,23 @@ class SchedaOreController extends Controller
     }
 
     public function updateAsync(Request $request) {
-        $schedaore = SchedaOre::find($request->input('id'));
-        $schedaore->data_odierna = $request->input('data_odierna');
-        $schedaore->note = $request->input('note');
-        $schedaore->ore_unitarie = $request->input('ore_unitarie');
-        $schedaore->save();
-        return json_encode(array_merge(['status' => 'ok'], $schedaore->toArray()));
+        $request->validate([
+            'ore_unitarie' => 'required|numeric',
+        ]);
+        $validator = Validator::make($request->all(), [
+            'ore_unitarie' => 'required|numeric',
+        ]);
 
+        if ($validator->fails()) {
+            return json_encode(['result' => 'Errore inserimento']);
+        }else {
+            $schedaore = SchedaOre::find($request->input('id'));
+            $schedaore->data_odierna = $request->input('data_odierna');
+            $schedaore->note = $request->input('note');
+            $schedaore->ore_unitarie = $request->input('ore_unitarie');
+            $schedaore->save();
+            return json_encode(array_merge(['status' => 'ok'], $schedaore->toArray()));
+        }
     }
 
 }
