@@ -6,7 +6,9 @@ use App\Models\Progetto;
 use Illuminate\Http\Request;
 use App\Models\SchedaOre;
 use App\Models\User;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
@@ -31,6 +33,46 @@ class SchedaOreController extends Controller
         return view('schedaore', ['listaprogetti' => $progetti, 'schedaore' => $schede_ore]);
 
     }
+
+    public function filter(Request $request)
+    {
+        $ore = null;
+
+        if($request->has(['data_inizio', 'data_fine'])) {
+            $data_inizio = $request->input('data_inizio');
+            $data_fine = $request->input('data_fine');
+        }
+        else {
+            $startDate = Carbon::now(); //returns current day
+            $data_inizio = $startDate->firstOfMonth()->format('Y-m-d');
+            $data_fine = $startDate->lastOfMonth()->format('Y-m-d');
+        }
+        $ore=DB::table("schede_ore")
+            ->join("progetti", function($join){
+                $join->on("schede_ore.progetto_id", "=", "progetti.id");
+            })
+            ->select("progetti.nome", DB::raw('SUM(schede_ore.ore_unitarie) as totale'))
+            ->whereBetween("schede_ore.data_odierna", [date($data_inizio), date($data_fine)])
+            ->groupBy("progetti.nome")
+            ->get();
+        return view('operazioni', compact('ore', 'data_inizio', 'data_fine'));
+
+
+    }
+
+    /*public function ore_tot(Request $request){
+
+
+        //$ore=SchedaOre::where('ore_unitarie', '>', 10)->sum('ore_unitarie');
+        //$ore=SchedaOre::find(85);
+        $schede=Progetto::all();
+        //where('progetto_id','=',"1")->
+        //$ore=SchedaOre::all()->sum('ore_unitarie')->groupBy($schede);
+        $ore = SchedaOre::all()->groupBy('nome');
+        //dd($ore);
+        return view('operazioni', compact('ore','schede'));
+
+    }*/
 
     public function store(Request $request)
     {
@@ -75,18 +117,10 @@ class SchedaOreController extends Controller
 
     }
 
-    public function destroy(SchedaOre $schedaore)
+    public function destroy($id)
     {
-        /*$schedaore = SchedaOre::where('id', $id);
+        $schedaore = SchedaOre::where('id', $id);
         $schedaore->delete();
-        return json_encode(['status' => 'ok']);
-        */
-        if ($schedaore->id > 1) {
-            $schedaore->delete();
-        }
-
-        // DODO: Lascio come compito quello di risolvere il problema di comunicare all'utente che la categoria con id 1 non può essere cancellata
-
         return json_encode(['status' => 'ok']);
     }
     public function get($id)

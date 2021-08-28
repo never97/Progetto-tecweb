@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Progetto;
+use App\Models\SchedaOre;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Cliente;
@@ -19,21 +20,41 @@ class ProgettoController extends Controller
 
     public function index() {
         $progetti = Progetto::all();
-        $clienti = Cliente::all();
-        return view('progetto.index', ['listaprogetti' => $progetti],['listaclienti' => $clienti]);
+        $schede_ore=SchedaOre::all();
+        return view('progetto.index', compact('progetti','schede_ore'));
+
 
 
 
         //return view('progetto.create', ['listaclienti' => $clienti]);
     }
-    public function filter($datainzio, $datafine) {
+    public function create()
+    {
+        $progetti = Progetto::all();
+        $clienti = Cliente::all();
+        return view('progetto.create', compact('progetti','clienti'));
+    }
+    /*public function filter($datainzio, $datafine) {
         //where
         Progetto::where('data_inizio', '>=', $datainzio, 'and', 'data_fine');
-        return view('progetto.index', ['listaprogetti' => $progetti],['listaclienti' => $clienti])
-    }
+        return view('progetto.index', ['listaprogetti' => $progetti],['listaclienti' => $clienti]);
+    }*/
     public function show(Progetto $progetto)
     {
         //
+    }
+    public function update(Request $request, Progetto $progetto) {
+        $progetto->nome = $request->input('nome');
+        $progetto->descrizione = $request->input('descrizione');
+        $progetto->note = $request->input('note');
+        $progetto->data_inizio_prevista = $request->input('data_inizio_prevista');
+        $progetto->data_fine_prevista = $request->input('data_fine_prevista');
+        $progetto->data_fine_effettiva = $request->input('data_fine_effettiva');
+        $progetto->costo_orario = $request->input('costo_orario');
+
+
+        $progetto->save();
+        return redirect('/progetto');
     }
     public function edit(Progetto $progetto)
     {
@@ -45,12 +66,12 @@ class ProgettoController extends Controller
         $progetto->delete();
         return json_encode(['status' => 'ok']);
     }
-    public function create()
+    /*public function create()
     {
         $cliente = Cliente::all();
 
         return view('progetto.create', ['listaclienti' => $cliente]);
-    }
+    }*/
 
 
     public function store(Request $request)
@@ -84,6 +105,7 @@ class ProgettoController extends Controller
             $progetto->data_inizio_prevista = $request->input('data_inizio_prevista');
             $progetto->data_fine_prevista = $request->input('data_fine_prevista');
             $progetto->data_fine_effettiva = $request->input('data_fine_effettiva');
+            $progetto->costo_orario = $request->input('costo_orario');
             $progetto->save();
             return redirect()->route('progetto.index');
         }

@@ -2,7 +2,15 @@
 
 @push('scripts')
     <script>
+        let conferma = false;
 
+        function setConfermaTrue() {
+            conferma = true;
+        }
+const event=null;
+        function setEvent() {
+            return event;
+        }
         function editscheda(id) {
             fetch(`schedaore/${id}`, {method: "GET"})
                 .then(response => response.json())
@@ -54,10 +62,94 @@
                       $(document).ready(function() {
                           $('#myModal').modal('show');
                       });
-                  }else{alert(result);}
+                  }
               }
               );
         }
+
+        /*function elimina(event) {
+            const id = event.target.getAttribute("data-id");
+            console.log(conferma);
+            let promessaElimina = new Promise(function(resolve,reject){
+            $('#myModalDelete').modal('show');
+            //let conf = confirm("Sei sicuro di voler cancellare ?");
+            console.log(conferma);
+
+                if(!conferma){
+                    reject("Non eliminare");
+                    return;
+                }else {
+                    resolve("Eliminare");
+                conferma = false;
+            }
+            });
+
+            promessaElimina.then(function(statoElimina){
+                console.log('Eliminato: ' + statoElimina);
+                fetch('schedaore/delete/'+id)
+                    .then(response => response.json())
+                    .then(data =>{
+                        console.log(data);
+                        if(data.status === "ok") {
+                            event.target.parentElement.parentElement.remove();
+                        }});
+
+            }).catch(function(statoCompiti){
+                console.log('Eliminato: ' + statoCompiti);
+
+            });
+        }*/
+        function EliminaConfirm(event) {
+            id = event.target.getAttribute("data-id");
+            console.log("Inizio funzione di conferma");
+            console.log("ID",id);
+
+            $('#myModalDelete').modal('show');
+                //let conf = confirm("Sei sicuro di voler cancellare ?");
+
+                console.log(conferma);
+
+
+            console.log("Fine funzione di conferma");
+            console.log(event);
+            delet=event.target.parentElement.parentElement;
+
+            console.log(delet);
+
+            //prova(id);
+
+
+
+        }
+        function prova(id){
+            var idd=id;
+            console.log("idd",idd);
+
+            return idd;
+        }
+        function elimina() {
+
+
+            //const id = event.target.getAttribute("data-id");
+            //id1=prova();
+            console.log("Inizio funzione elimina vera e propria",conferma);
+            console.log("ID",id);
+
+            if(!conferma){
+                return;
+            }else {
+                conferma = false;
+            }
+            fetch('schedaore/delete/'+id)
+                .then(response => response.json())
+                .then(data =>{
+                    console.log(data);
+                    if(data.status === "ok") {
+                       delet.remove();
+                    }});
+
+        }
+
     </script>
 @endpush
 
@@ -84,7 +176,6 @@
                             <input type="hidden" name="user_id" value="{{ Auth::user()->id }}" id="user_id"/>
                         </div>
                         <div class="form-group">
-                            <label for="">Seleziona un progetto di </label> {{ Auth::user()->cognome }}<label>:</label>
                             <select class="form-control" name="progetto_id">
                                 @foreach ($listaprogetti as $progetto)
                                     <option value="{{ $progetto->id }}">{{ $progetto->nome }}</option>
@@ -127,9 +218,10 @@
                             <th>data_odierna</th>
                             <th>ore_unitarie</th>
                             <th>note</th>
-                            <th>dipendente</th>
                             <th>progetto</th>
-                            <th>azioni</th>
+                            <th>Modifica</th>
+                            <th>Elimina</th>
+
                         </tr>
                         </thead>
                         <tbody>
@@ -138,16 +230,15 @@
                                 <td class="data_odierna">{{ date('d/m/Y', strtotime($schede_ore->data_odierna)) }}</td>
                                 <td class="ore_unitarie">{{$schede_ore->ore_unitarie}}</td>
                                 <td class="note">{{$schede_ore->note}}</td>
-                                <td class="user_id">{{$schede_ore->user->nome}} {{$schede_ore->user->cognome}}</td>
-                                <td class="progetto_id">{{$schede_ore->progetto->nome}}</td>
-                                <td><a href="#" class="btn btn-outline-danger btn-sm delete-btn" data-id="{{ $schede_ore->id }}">Elimina</a></td>
-                                {{-- <td><a onclick="modifica(event)" data-id="{{$schede_ore->id}}" class="btn btn-danger">Modifica</a></td>
---}}
-                               <td><a href="javascript:editscheda({{$schede_ore->id}})" class="btn btn-outline-danger btn-sm edit-btn" data-id="{{ $schede_ore->id }}">Modifica</a></td>
+                               {{--  <td class="user_id">{{$schede_ore->user->nome}} {{$schede_ore->user->cognome}}</td>
+                                --}}<td class="progetto_id">{{$schede_ore->progetto->nome}}</td>
+                                {{-- <td><a href="#" class="btn btn-outline-danger btn-sm delete-btn" data-id="{{ $schede_ore->id }}">Elimina</a></td>
+                                 <td><a onclick="modifica(event)" data-id="{{$schede_ore->id}}" class="btn btn-danger">Modifica</a></td>
+ --}}                            {{----}}<td><a href="javascript:editscheda({{$schede_ore->id}})"  data-id="{{ $schede_ore->id }}"><i class="bi bi-pencil-square" style="color:#198754;"></i></a></td>
+                                <td><a href="#" onclick="EliminaConfirm(event)" data-id="{{$schede_ore->id}}" class="bi bi-x-lg" style="color: #dc3545;"></a></td>
 
                             </tr>
                         @endforeach
-                        <div class="alert alert-success" style="display:none;" role="alert"></div>
 
                         </tbody>
                     </table>
@@ -251,7 +342,7 @@
 <div class="modal fade"  id="myModalError"  tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog"  role="document">
         <div class="modal-content" style="background-color: red;">
-            <div class="modal-header" style="border-top: black 1px solid";>
+            <div class="modal-header" style="border-top: black 1px solid">
                 <h5 class="modal-title" id="exampleModalLabel color:green">Attenzione</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
@@ -260,13 +351,27 @@
             <div class="modal-body" >
                 Ops! Sembra che tu abbia sbagliato ad inserire qualcosa
             </div>
-            <div class="modal-footer" style="border-top: black 1px solid";>
+            <div class="modal-footer" style="border-top: black 1px solid">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Chiudi</button>
             </div>
         </div>
     </div>
 </div>
-
+<div class="modal fade"  id="myModalDelete"  tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog"  role="document">
+        <div class="modal-content" style="background-color: #75d58c;">
+            <div class="modal-header" >
+                <h5 class="modal-title" id="exampleModalLabel">Sei sicuro di voler eliminare?</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-footer" >
+                <button type="button" onclick="setConfermaTrue(); elimina()" class="btn btn-secondary" data-dismiss="modal">Conferma</button>
+            </div>
+        </div>
+    </div>
+</div>
 <script>
     /*function editscheda(id){
         $.get('/schedaore/'+id, function($schede_ore){
