@@ -23,20 +23,20 @@ class SchedaOreController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
+        $this->middleware('role')->except('index','filterStat','destroy','updateAsync','get','store'); //just the admin
     }
 
     public function index(Request $request)
     {
-
         $progetti = $request->user()->progetti; //::where('user_id', $user->id);;
-        $schede_ore = SchedaOre::where('user_id','=', $request->user()->id)->get();
-        return view('schedaore', ['listaprogetti' => $progetti, 'schedaore' => $schede_ore]);
+        $schede = SchedaOre::where('user_id','=', $request->user()->id)->get();
+        return view('schedaore', compact('progetti','schede'));
+
 
     }
 
     public function filter(Request $request)
     {
-        $ore = null;
 
         if($request->has(['data_inizio', 'data_fine'])) {
             $data_inizio = $request->input('data_inizio');
@@ -55,24 +55,78 @@ class SchedaOreController extends Controller
             ->whereBetween("schede_ore.data_odierna", [date($data_inizio), date($data_fine)])
             ->groupBy("progetti.nome")
             ->get();
-        return view('operazioni', compact('ore', 'data_inizio', 'data_fine'));
+
+        $clientiProg=DB::table("schede_ore")
+            ->join("progetti", function($join){
+                $join->on("schede_ore.progetto_id", "=", "progetti.id");
+            })
+            ->join("clienti", function($join){
+                $join->on("progetti.cliente_id", "=", "clienti.id");
+            })
+            ->select("clienti.nome_referente", DB::raw('SUM(schede_ore.ore_unitarie) as totale'))
+            ->whereBetween("schede_ore.data_odierna", [date($data_inizio), date($data_fine)])
+            ->groupBy("clienti.nome_referente")
+            ->get();
+
+
+        return view('operazioni', compact('ore','clientiProg', 'data_inizio', 'data_fine'));
+
+
+    }
+    function filterStat(Request $request){
+        $id = Auth::id();
+
+        $statistiche=DB::table("schede_ore")
+            ->join("progetti", function($join){
+                $join->on("schede_ore.progetto_id", "=", "progetti.id");
+            })
+            ->join("users", function($join){
+                $join->on("schede_ore.user_id", "=", "users.id");
+            })
+            ->select("users.id","users.nome as utente","progetti.nome as progetto", DB::raw("SUM(schede_ore.ore_unitarie)as totale"))
+            ->where("users.id", "=", [$id])
+            ->groupBy("utente","progetto","users.id")
+            ->get();
+
+        if($request->has(['data_check'])) {
+            $data_check = $request->input('data_check');
+
+        }
+        else {
+            $startDate = Carbon::now(); //returns current day
+            $data_check = $startDate->today()->format('Y-m-d');
+        }
+
+
+
+        $straordinari=DB::table("schede_ore")
+            ->join("progetti", function($join){
+                $join->on("schede_ore.progetto_id", "=", "progetti.id");
+            })
+            ->join("users", function($join){
+                $join->on("schede_ore.user_id", "=", "users.id");
+            })
+            ->select("users.nome", DB::raw("(schede_ore.ore_unitarie - 8) as straordinari"))
+            ->where("users.id", "=", [$id])
+            ->where("schede_ore.ore_unitarie", ">", "8")
+            ->where("schede_ore.data_odierna", "=", [date($data_check)])
+            ->get();
+
+
+
+
+
+
+
+
+
+
+        return view('statistiche', compact('statistiche','straordinari','data_check'));
 
 
     }
 
-    /*public function ore_tot(Request $request){
 
-
-        //$ore=SchedaOre::where('ore_unitarie', '>', 10)->sum('ore_unitarie');
-        //$ore=SchedaOre::find(85);
-        $schede=Progetto::all();
-        //where('progetto_id','=',"1")->
-        //$ore=SchedaOre::all()->sum('ore_unitarie')->groupBy($schede);
-        $ore = SchedaOre::all()->groupBy('nome');
-        //dd($ore);
-        return view('operazioni', compact('ore','schede'));
-
-    }*/
 
     public function store(Request $request)
     {
