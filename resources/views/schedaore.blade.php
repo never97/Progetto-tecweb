@@ -147,7 +147,7 @@ const event=null;
                     if(data.status === "ok") {
                        delet.remove();
                     }});
-
+            $('#alertEliminato').modal('show');
         }
 
     </script>
@@ -177,7 +177,7 @@ const event=null;
                         </div>
                         <div class="form-group">
                             <select class="form-control" name="progetto_id">
-                                @foreach ($listaprogetti as $progetto)
+                                @foreach ($progetti as $progetto)
                                     <option value="{{ $progetto->id }}">{{ $progetto->nome }}</option>
                                 @endforeach
                             </select>
@@ -194,10 +194,10 @@ const event=null;
 
                         <div class="form-group">
                             <label for="ore_unitarie">Ore impiegate</label>
-                            <input type="number" name="ore_unitarie" min="1" step="1" max="15" class="form-control" id="ore_unitarie">
+                            <input type="number" name="ore_unitarie" min="1" max="15" class="form-control" id="ore_unitarie">
                         </div>
-
                         <button type="submit" class="btn btn-primary">Inserisci scheda</button>
+
                     </form>
                 </div>
 
@@ -207,7 +207,7 @@ const event=null;
         <div class="col-8">
             <div class="row">
 
-                @if($schedaore->isEmpty())
+                @if($schede->isEmpty())
                     <p>Non ci sono schede presenti</p>
                 @else
                     <h1> Tutte le schede </h1>
@@ -225,7 +225,7 @@ const event=null;
                         </tr>
                         </thead>
                         <tbody>
-                        @foreach($schedaore as $schede_ore)
+                        @foreach($schede as $schede_ore)
                             <tr id="sid{{$schede_ore->id}}">
                                 <td class="data_odierna">{{ date('d/m/Y', strtotime($schede_ore->data_odierna)) }}</td>
                                 <td class="ore_unitarie">{{$schede_ore->ore_unitarie}}</td>
@@ -323,20 +323,24 @@ const event=null;
 </div>
 <div class="modal fade"  id="myModal"  tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog"  role="document">
-        <div class="modal-content" style="background-color: #75d58c;">
-            <div class="modal-header" style="border-bottom: black 1px solid";>
-                <h5 class="modal-title" id="exampleModalLabel color:green">Modifica completata!</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body" >
-                Elemento modificato correttamente
-            </div>
-            <div class="modal-footer" style="border-top: black 1px solid";>
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Chiudi</button>
-            </div>
+
+        <div class="alert alert-success alert-dismissible" >
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+            <strong>Modificato!</strong>
         </div>
+
+
+    </div>
+</div>
+<div class="modal fade"  id="alertEliminato"  tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog"  role="document">
+
+        <div class="alert alert-success alert-dismissible"  id="alertEliminato">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+            <strong>Eliminato!</strong>
+        </div>
+
+
     </div>
 </div>
 <div class="modal fade"  id="myModalError"  tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -359,7 +363,7 @@ const event=null;
 </div>
 <div class="modal fade"  id="myModalDelete"  tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog"  role="document">
-        <div class="modal-content" style="background-color: #75d58c;">
+        <div class="modal-content" style="background-color: #fff3b1;">
             <div class="modal-header" >
                 <h5 class="modal-title" id="exampleModalLabel">Sei sicuro di voler eliminare?</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -367,7 +371,7 @@ const event=null;
                 </button>
             </div>
             <div class="modal-footer" >
-                <button type="button" onclick="setConfermaTrue(); elimina()" class="btn btn-secondary" data-dismiss="modal">Conferma</button>
+                <button type="button" onclick="setConfermaTrue(); elimina()"  class="btn btn-danger" data-dismiss="modal">Elimina</button>
             </div>
         </div>
     </div>
