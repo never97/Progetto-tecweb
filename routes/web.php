@@ -22,9 +22,16 @@ Auth::routes();
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
 //Route::resource('schedaore', App\Http\Controllers\SchedaOreController::class);
-Route::resource('schedaore', App\Http\Controllers\SchedaOreController::class)->except(['show', 'update']);
+Route::resource('schedaore', App\Http\Controllers\SchedaOreController::class)->except(['show', 'update','destroy']);
 Route::get('schedaore/{id}', [App\Http\Controllers\SchedaOreController::class,'get']);
 Route::put("schedaore/update", [App\Http\Controllers\SchedaOreController::class, 'updateAsync']);
+Route::get("schedaore/delete/{id}", [App\Http\Controllers\SchedaOreController::class, 'destroy']);
+
+
+//Route::get('/operazione', [App\Http\Controllers\SchedaOreController::class, 'index1'])->name('operazione');
+//Route::post('/operazione/index1', [App\Http\Controllers\SchedaOreController::class, 'save'])->name('operazioni');
+Route::get('/operazioni', [App\Http\Controllers\SchedaOreController::class, 'filter'])->name('schedaorefiltro');
+Route::get('/statistiche', [App\Http\Controllers\SchedaOreController::class, 'filterStat'])->name('filtroStatistiche');
 
 
 

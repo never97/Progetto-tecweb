@@ -114,14 +114,125 @@ class SchedaOreController extends Controller
 
 
 
+        if($request->has(['mese'])) {
+            $mese = $request->input('mese');
+            //dd($mese);
+
+
+                if($mese=="Gennaio"){
+                    $month="01";
+                }else if($mese=="Febbraio"){
+                    $month="02";
+                }else if($mese=="Marzo"){
+                    $month="03";
+                }else if($mese=="Aprile"){
+                    $month="04";
+                }else if($mese=="Maggio"){
+                    $month="05";
+                }else if($mese=="Giugno"){
+                    $month="06";
+                }else if($mese=="Luglio"){
+                    $month="07";
+                }else if($mese=="Agosto"){
+                    $month="08";
+                }else if($mese=="Settembre"){
+                    $month="09";
+                }else if($mese=="Ottobre"){
+                    $month="10";
+                }else if($mese=="Novembre"){
+                    $month="11";
+                }else if($mese=="Dicembre"){
+                    $month="12";
+                }
+        }
+        else {
+            $startMese = Carbon::now(); //returns current day
+            $month = $startMese->today()->format('m');
+            //dd($month);
+            if($month=="01"){
+                $mese="Gennaio";
+            }else if($month=="02"){
+                $mese="Febbraio";
+            }else if($month=="03"){
+                $mese="Marzo";
+            }else if($month=="04"){
+                $mese="Aprile";
+            }else if($month=="05"){
+                $mese="Maggio";
+            }else if($month=="06"){
+                $mese="Giugno";
+            }else if($month=="07"){
+                $mese="Luglio";
+            }else if($month=="08"){
+                $mese="Agosto";
+            }else if($month=="09"){
+                $mese="Settembre";
+            }else if($month=="10"){
+                $mese="Ottobre";
+            }else if($month=="11"){
+                $mese="Novembre";
+            }else if($month=="12"){
+                $mese="Dicembre";
+            }
+        }
+
+
+        $calendario=DB::table("schede_ore")
+                ->join("progetti", function($join){
+                    $join->on("schede_ore.progetto_id", "=", "progetti.id");
+                })
+                ->join("users", function($join){
+                    $join->on("schede_ore.user_id", "=", "users.id");
+                })
+                ->select("schede_ore.data_odierna", "schede_ore.ore_unitarie", "schede_ore.note", "progetti.nome", DB::raw("(extract(month from schede_ore.data_odierna))as mese"))
+                ->where("users.id", "=", [$id])
+                ->having(DB::raw('mese'), '=', $month)
+                ->get();
+
+
+
+        /*$numero_prog=DB::table("schede_ore")
+            ->select(DB::raw("count(distinct schede_ore.progetto_id)as numero_progetti"))
+            //->where(DB::raw("(extract(month from schede_ore.data_odierna))"),"=",8)
+            ->get();
+*/
+        $users = DB::table("schede_ore")
+            ->join("progetti", function($join){
+                $join->on("schede_ore.progetto_id", "=", "progetti.id");
+            })
+            ->join("users", function($join){
+                $join->on("schede_ore.user_id", "=", "users.id");
+            })
+            ->select(DB::raw("COUNT(*) as count"))
+            ->whereYear('data_odierna', date('Y'))
+            ->groupBy(DB::raw("Month(data_odierna)"))
+            ->where("users.id", "=", [$id])
+            ->pluck('count');
+
+        $mesi1 = DB::table("schede_ore")
+            ->join("progetti", function($join){
+                $join->on("schede_ore.progetto_id", "=", "progetti.id");
+            })
+            ->join("users", function($join){
+                $join->on("schede_ore.user_id", "=", "users.id");
+            })
+            ->select(DB::raw("Month(data_odierna) as mese1"))
+            ->whereYear('data_odierna',date('Y'))
+            ->where("users.id", "=", [$id])
+            ->groupBy(DB::raw("Month(data_odierna)"))
+            ->pluck('mese1');
 
 
 
 
+        $datas=array(0,0,0,0,0,0,0,0,0,0,0,0);
+        foreach ($mesi1 as $index => $mese1){
+            $datas[$mese1-1]=$users[$index];
+        }
 
 
 
-        return view('statistiche', compact('statistiche','straordinari','data_check'));
+        return view('statistiche', compact('statistiche','straordinari','data_check','calendario','mese','month','datas'));
 
 
     }

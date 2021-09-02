@@ -49,12 +49,12 @@ class UserController extends Controller
         //validate
         $validator = Validator::make($request->all(), [
 
-        //request()->validate([
-           'role' => 'required',
-           'email' => 'required|email|max:60|unique:users,email',
-           'password'=> 'required|min:8|max:50',
-           'nome' => 'required|min:2|max:50',
-           'cognome' => 'required|max:50',
+            //request()->validate([
+            'role' => 'required',
+            'email' => 'required|email|max:60|unique:users,email',
+            'password'=> 'required|min:8|max:50',
+            'nome' => 'required|min:2|max:50',
+            'cognome' => 'required|max:50',
         ]);
         if ($validator->fails()) {
             return redirect()->back()

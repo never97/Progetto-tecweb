@@ -15,10 +15,9 @@
                 .then(response => response.json())
                 .then(data =>{
                     console.log(data);
-                if(data.status === "ok") {
-                    event.target.parentElement.parentElement.remove();
-                }});
-
+                    if(data.status === "ok") {
+                        event.target.parentElement.parentElement.remove();
+                    }});
         }
     </script>
 @endpush
@@ -41,16 +40,16 @@
                             @csrf
                             <div class="form-group">
                                 Ruolo
-                                    <div class="row">
-                                        <div class="col">
-                                            <label for="role1">Admin</label>
-                                            <input type="radio" name="role" class="form-control-sm" id="role1" value="admin">
-                                        </div>
-                                        <div class="col">
-                                            <label for="role2">Semplice</label>
-                                            <input type="radio" name="role" class="form-control-sm" id="role2" value="std">
-                                        </div>
+                                <div class="row">
+                                    <div class="col">
+                                        <label for="role1">Admin</label>
+                                        <input type="radio" name="role" class="form-control-sm" id="role1" value="admin">
                                     </div>
+                                    <div class="col">
+                                        <label for="role2">Semplice</label>
+                                        <input type="radio" name="role" class="form-control-sm" id="role2" value="std">
+                                    </div>
+                                </div>
                             </div>
                             <div class="form-group">
                                 <label for="email">Email</label>
@@ -67,7 +66,7 @@
                             <div class="form-group">
                                 <label for="password_generata">Password consigliata</label>
                                 <input type="text" readonly="readonly" class="form-control" value="{{Str::random(8)}}"
-                                id="password_generata"/>
+                                       id="password_generata"/>
                                 <input type="button" class="btn btn-primary mt-2" onclick="copia()" value="Usa questa password"/>
                             </div>
                             <div class="form-group">
@@ -90,26 +89,26 @@
                         <table class="table">
                             <thead>
                             <tr>
-                            <th>Nome</th>
-                            <th>Cognome</th>
-                            <th>Email</th>
-                            <th>Ruolo</th>
-                            <th>Elimina</th>
+                                <th>Nome</th>
+                                <th>Cognome</th>
+                                <th>Email</th>
+                                <th>Ruolo</th>
+                                <th>Elimina</th>
                             </tr>
                             </thead>
                             <tbody>
                             @foreach($listautenti as $user)
-                            <tr>
-                                <td>{{$user->nome}}</td>
-                                <td>{{$user->cognome}}</td>
-                                <td>{{$user->email}}</td>
-                                <td>{{$user->is_admin == 0 ? "Utente semplice" : "Amministratore"}}</td>
-                                <!--<td><a href=""></a>></td>>!-->
-                                <td><a onclick="elimina(event)" data-id="{{$user->id}}" class="btn btn-danger">Elimina</a></td>
-                                <td><a href="{{ URL::action('App\Http\Controllers\UserController@edit', $user) }}" class="btn btn-danger">Modifica</a></td>
+                                <tr>
+                                    <td>{{$user->nome}}</td>
+                                    <td>{{$user->cognome}}</td>
+                                    <td>{{$user->email}}</td>
+                                    <td>{{$user->is_admin == 0 ? "Utente semplice" : "Amministratore"}}</td>
+                                    <!--<td><a href=""></a>></td>>!-->
+                                    <td><a onclick="elimina(event)" data-id="{{$user->id}}" class="btn btn-danger">Elimina</a></td>
+                                    <td><a href="{{ URL::action('App\Http\Controllers\UserController@edit', $user) }}" class="btn btn-danger">Modifica</a></td>
 
 
-                            </tr>
+                                </tr>
                             @endforeach
                             </tbody>
                         </table>
