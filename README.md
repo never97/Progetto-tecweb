@@ -1,4 +1,4 @@
-TL;DR: Web application for Web Technologie Course, at Università degli Studi di Ferrara, a.y. 2020-2021.
+TL;DR: Web application for Web Technologies Course, at Università degli Studi di Ferrara, a.y. 2020-2021.
 
 I made a project management software where a generic company does services for other companies, in particular take trace of the hours that each employee spends on various projects assigned to them, and that can manage two types of users: admin and common user.
 
