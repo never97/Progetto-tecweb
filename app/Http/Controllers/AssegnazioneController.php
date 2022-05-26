@@ -48,8 +48,17 @@ class AssegnazioneController extends Controller
             $assegnazione->data_assegnazione = $request->input('data_assegnazione');
             $assegnazione->user_id = $request->input('user_id');
             $assegnazione->progetto_id = $request->input('progetto_id');
-            $assegnazione->save();
-            return redirect('assegnazione');
+            try {
+                $assegnazione->save();
+                return redirect('assegnazione');
+            }catch ( \Illuminate\Database\QueryException $e){
+                $errorCode = $e->errorInfo[1];
+                if($errorCode == 1062){
+                    return redirect('assegnazione')->withErrors(['Il dipendente si occupa già di questo progetto']);
+
+                }
+            }
+
         }
     }
 

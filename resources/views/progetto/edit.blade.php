@@ -10,53 +10,72 @@
                 </ul>
             </div>
         @endif
-            <div class="row justify-content-between">
-                <div class="col-3">
-                    <div class="row">
-                        <div class="card w-100 p-2">
+        <div class="row">
+            <div class="col-8 offset-2"><h2>Modifica progetto</h2>
+                <div class="row">
+                    <div class="card w-100 p-4">
 
 
-                            <form id="form-user" action="{{URL::action('App\Http\Controllers\ProgettoController@update', $progetto)}}" method="post">
-                                {{ method_field('PUT') }}
-                                {{ csrf_field() }}
+                        <form id="form-user" action="{{URL::action('App\Http\Controllers\ProgettoController@update', $progetto)}}" method="post">
+                            {{ method_field('PUT') }}
+                            {{ csrf_field() }}
 
-                                <div class="form-group">
-                                    <label for="nome">Nome progetto</label>
-                                    <input type="text" name="nome" class="form-control" id="nome" value="{{$progetto->nome}}">
+                            <div class="form-group row">
+                                <label for="nome" class="col-sm-3 col-form-label">Nome progetto</label>
+                                <div class="col-sm-8">
+                                    <input type="text" required name="nome" class="form-control" id="nome" value="{{$progetto->nome}}">
                                 </div>
-                                <div class="form-group">
-                                    <label for="descrizione">Descrizione</label>
-                                    <input type="text" name="descrizione" class="form-control" id="descrizione" value="{{$progetto->descrizione}}">
+                            </div>
+                            <div class="form-group row">
+                                <label for="descrizione" class="col-sm-3 col-form-label">Descrizione</label>
+                                <div class="col-sm-8">
+                                    <input type="text" required name="descrizione" class="form-control" id="descrizione" value="{{$progetto->descrizione}}">
                                 </div>
-                                <div class="form-group">
-                                    <label for="note">Note</label>
+                            </div>
+                            <div class="form-group row">
+                                <label for="note" class="col-sm-3 col-form-label">Note</label>
+                                <div class="col-sm-8">
                                     <input type="text" name="note" class="form-control" id="note" value="{{$progetto->note}}">
                                 </div>
-                                <div class="form-group">
-                                    <label for="data_inizio_prevista">Previsione data inizio</label>
-                                    <input type="date" name="data_inizio_prevista" class="form-control" id="data_inizio_prevista" value={{date('Y-m-g', strtotime($progetto->data_inizio_prevista))}}>
+                            </div>
+                            <div class="form-group row">
+                                <label for="data_inizio_prevista" class="col-sm-3 col-form-label">Previsione data inizio</label>
+                                <div class="col-sm-8">
+                                    <input type="date" required name="data_inizio_prevista" class="form-control" id="data_inizio_prevista" value={{date('Y-m-g', strtotime($progetto->data_inizio_prevista))}}>
                                 </div>
-                                <div class="form-group">
-                                    <label for="data_fine_prevista">Previsione data fine</label>
-                                    <input type="date" name="data_fine_prevista" class="form-control" id="data_fine_prevista" value="{{date('Y-m-g', strtotime($progetto->data_fine_prevista))}}">
+                            </div>
+                            <div class="form-group row">
+                                <label for="data_fine_prevista" class="col-sm-3 col-form-label">Previsione data fine</label>
+                                <div class="col-sm-8">
+                                    <input type="date" required name="data_fine_prevista" class="form-control" id="data_fine_prevista" value="{{date('Y-m-g', strtotime($progetto->data_fine_prevista))}}">
                                 </div>
-                                <div class="form-group">
-                                    <label for="data_fine_effettiva">Effettiva data fine</label>
-                                    <input type="date" name="data_fine_effettiva" class="form-control" id="data_fine_effettiva" value="{{date('Y-m-g', strtotime($progetto->data_fine_effettiva))}}">
+                            </div>
+                            <div class="form-group row">
+                                <label for="data_fine_effettiva" class="col-sm-3 col-form-label">Effettiva data fine</label>
+                                <div class="col-sm-8">
+                                    <input type="date" name="data_fine_effettiva" class="form-control" id="data_fine_effettiva"
+                                           @if ($progetto->data_fine_effettiva!==null)
+                                           value="{{date('Y-m-g', strtotime($progetto->data_fine_effettiva))}}"
+                                            @endif
+                                    >
                                 </div>
-                                <div class="form-group">
-                                    <label for="costo_orario">Costo orario</label>
-                                    <input type="number" name="costo_orario" min="1" step="1" max="500" class="form-control" id="costo_orario" value="{{$progetto->costo_orario}}">
+                            </div>
+                            <div class="form-group row">
+                                <label for="costo_orario" class="col-sm-3 col-form-label">Costo orario</label>
+                                <div class="col-sm-8">
+                                    <input type="number" required name="costo_orario" min="1" step="1" max="500" class="form-control" id="costo_orario" value="{{$progetto->costo_orario}}">
                                 </div>
-                                <a href="{{ URL::action('App\Http\Controllers\ProgettoController@index') }}" class="bi bi-arrow-left-square-fill"></a>
+                            </div>
+                            <div class="row p-4">
+                                <a href="{{ URL::action('App\Http\Controllers\ProgettoController@index') }}" class="bi bi-arrow-left-circle-fill btn-lg"></a>
 
-                                <button type="submit" class="btn btn-primary">Inserisci progetto</button>
-
-                            </form>
-                        </div>
-
+                                <input type="submit" value="Modifica progetto" class="btn btn-primary d-block mx-auto "/>
+                            </div>
+                        </form>
                     </div>
 
+                </div>
+
+            </div>
         </div>
-    </div>
 @endsection

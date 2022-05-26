@@ -37,6 +37,8 @@ class SchedaOreController extends Controller
 
     public function filter(Request $request)
     {
+        $id = Auth::id();
+
 
         if($request->has(['data_inizio', 'data_fine'])) {
             $data_inizio = $request->input('data_inizio');
@@ -63,13 +65,32 @@ class SchedaOreController extends Controller
             ->join("clienti", function($join){
                 $join->on("progetti.cliente_id", "=", "clienti.id");
             })
-            ->select("clienti.nome_referente", DB::raw('SUM(schede_ore.ore_unitarie) as totale'))
+            ->select("clienti.nome_referente", "clienti.cognome_referente",DB::raw('SUM(schede_ore.ore_unitarie) as totale'))
             ->whereBetween("schede_ore.data_odierna", [date($data_inizio), date($data_fine)])
-            ->groupBy("clienti.nome_referente")
+            ->groupBy("clienti.nome_referente","clienti.cognome_referente")
+            ->get();
+
+         $users = DB::table("schede_ore")
+            ->join("progetti", function($join){
+                $join->on("schede_ore.progetto_id", "=", "progetti.id");
+            })
+            ->join("users", function($join){
+                $join->on("schede_ore.user_id", "=", "users.id");
+            })
+            ->select(DB::raw("COUNT(*) as count"))
+            ->whereYear('data_odierna', date('Y'))
+            ->groupBy(DB::raw("Month(data_odierna)"))
+            ->where("users.id", "=", [$id])
+            ->pluck('count');
+
+        $mesi1 = DB::table("progetti")
+            ->select(DB::raw("progetti.nome"))
             ->get();
 
 
-        return view('operazioni', compact('ore','clientiProg', 'data_inizio', 'data_fine'));
+
+
+        return view('operazioni', compact('ore','clientiProg', 'data_inizio', 'data_fine','mesi1'));
 
 
     }
@@ -106,7 +127,7 @@ class SchedaOreController extends Controller
             ->join("users", function($join){
                 $join->on("schede_ore.user_id", "=", "users.id");
             })
-            ->select("users.nome", DB::raw("(schede_ore.ore_unitarie - 8) as straordinari"))
+            ->select("schede_ore.data_odierna", DB::raw("(schede_ore.ore_unitarie - 8) as straordinari"))
             ->where("users.id", "=", [$id])
             ->where("schede_ore.ore_unitarie", ">", "8")
             ->where("schede_ore.data_odierna", "=", [date($data_check)])
@@ -190,12 +211,6 @@ class SchedaOreController extends Controller
                 ->get();
 
 
-
-        /*$numero_prog=DB::table("schede_ore")
-            ->select(DB::raw("count(distinct schede_ore.progetto_id)as numero_progetti"))
-            //->where(DB::raw("(extract(month from schede_ore.data_odierna))"),"=",8)
-            ->get();
-*/
         $users = DB::table("schede_ore")
             ->join("progetti", function($join){
                 $join->on("schede_ore.progetto_id", "=", "progetti.id");
@@ -221,7 +236,6 @@ class SchedaOreController extends Controller
             ->where("users.id", "=", [$id])
             ->groupBy(DB::raw("Month(data_odierna)"))
             ->pluck('mese1');
-
 
 
 

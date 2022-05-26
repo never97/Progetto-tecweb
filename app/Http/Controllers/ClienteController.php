@@ -35,8 +35,17 @@ class ClienteController extends Controller
     public function destroy($id)
     {
         $cliente = Cliente::where('id', $id);
-        $cliente->delete();
-        return json_encode(['status' => 'ok']);
+
+        try {
+            $cliente->delete();
+            return json_encode(['status' => 'ok']);
+        }catch ( \Illuminate\Database\QueryException $e){
+            $errorCode = $e->errorInfo[1];
+            if($errorCode == 1451){
+
+                return json_encode(['status' => 'failed']);
+            }
+        }
     }
     public function update(Request $request, Cliente $cliente) {
         $cliente->ragione_sociale = $request->input('ragione_sociale');

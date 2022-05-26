@@ -1,219 +1,216 @@
 @extends('layouts.app')
-    @push('scripts')
+@push('scripts')
+    <script src="https://code.highcharts.com/highcharts.src.js"></script>
 
-    @endpush
+@endpush
 @section('content')
-    <div class="container">
-        <div class="row justify-content-between">
-
-            <div class="col-8">
-
+    <div class="container-fluid">
+        <div class="row card mt-2 p-4 justify-center">
+            <div class="col-10 offset-1">
 
 
-                @if($statistiche->isEmpty())
-                    <p>Non ci sono schede presenti</p>
-                @else
-
-                    <p>
-                        <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseClienti" aria-expanded="false" aria-controls="collapseExample">
-                            Mostra le ore spese per ogni cliente
-                        </button>
-                    </p>
-
-                    <div class="collapse" id="collapseClienti">
-                        <div class="card card-body">
-                            <h1> Ore spese su ogni progetto di {{Auth::user()->nome}} {{Auth::user()->cognome}}</h1>
-                            <table class="table">
-                                <thead>
-                                <tr>
-                                    <th>Nome cliente</th>
-                                    <th>Ore unitarie</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                @foreach($statistiche as $dipendenteSemplice)
-                                    <tr>
-                                        <td class="somma">{{$dipendenteSemplice->progetto}}</td>
-                                        <td class="somma">{{$dipendenteSemplice->totale}}</td>
 
 
-                                    </tr>
-                                @endforeach
-                                </tbody>
-                            </table>
+
+
+                <div class="accordion" id="accordionCliente">
+                    <div class="card ">
+                        <div class="card-header" id="headingCliente">
+                            <h2 class="mb-0">
+                                <button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse" data-target="#collapseCliente" aria-expanded="true" aria-controls="collapseCliente">
+                                    Ore spese su ogni progetto
+                                </button>
+                            </h2>
                         </div>
-                    </div>
-                @endif
-
-                <p>
-                    <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseStraordinari" aria-expanded="false" aria-controls="collapseExample">
-                        Mostra gli straordinari
-                    </button>
-                </p>
-                <div class="collapse" id="collapseStraordinari">
-                    <div class="card card-body">
-                        <div class="row mb-2">
-                            <form method="GET" action="{{action('App\Http\Controllers\SchedaOreController@filterStat')}}">
-                                <div class="form-row">
-                                    <div class="col">
-                                        <input type="date" class="form-control" name="data_check" required value="{{$data_check}}">
+                        <div id="collapseCliente" class="collapse show" aria-labelledby="headingCliente" data-parent="#accordionCliente">
+                            <div class="card-body ">
+                                @if($statistiche->isEmpty())
+                                    <div class="row d-flex justify-content-center">
+                                        <p>Non ci sono schede presenti</p>
                                     </div>
-                                    <input type="submit" class="btn btn-info" value="Cerca"/>
-                                    <a href="statistiche" class="btn btn-info">indietro</a>
+                                @else
+
+                                    <table class="table">
+                                        <thead>
+                                        <tr>
+                                            <th>Nome progetto</th>
+                                            <th>Ore unitarie</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        @foreach($statistiche as $dipendenteSemplice)
+                                            <tr>
+                                                <td class="somma">{{$dipendenteSemplice->progetto}}</td>
+                                                <td class="somma">{{$dipendenteSemplice->totale}}</td>
+
+
+                                            </tr>
+                                        @endforeach
+                                        </tbody>
+                                    </table>
+                            </div>
+                        </div>
+
+                        @endif
+                    </div>
+                </div>
+                <div class="accordion" id="accordionStraord">
+                    <div class="card">
+                        <div class="card-header" id="headingOne">
+                            <h2 class="mb-0">
+                                <button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse" data-target="#collapseStraord" aria-expanded="true" aria-controls="collapseStraord">
+                                    Straordinari
+                                </button>
+                            </h2>
+                        </div>
+                        <div id="collapseStraord" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionStraord">
+                            <div class="card-body">
+                                <form method="GET" action="{{action('App\Http\Controllers\SchedaOreController@filterStat')}}">
+                                    <div class="form-row d-flex justify-content-center p-2">
+                                        <div class="col-2">
+                                            <input type="date" class="form-control" name="data_check" required value="{{$data_check}}">
+                                        </div>
+                                        <input type="submit" class="btn btn-info" value="Cerca"/>
+                                    </div>
+                                </form>
+
+
+                                <div class="row d-flex justify-content-center">
+                                    <p>Stai guardando il giorno  '{{date('d-m-Y', strtotime($data_check))}}'</p>
+                                </div>
+                                @if($straordinari->isEmpty())
+                                    <div class="row d-flex justify-content-center">
+
+                                        <p>Non sono presenti straordinari nella data selezionata</p>
+                                    </div>
+                                @else
+
+
+
+
+                                    <h1> Straordinari</h1>
+                                    <table class="table">
+                                        <thead>
+                                        <tr>
+                                            <th>Data</th>
+                                            <th>Ore extra lavorative</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        @foreach($straordinari as $dipendenteSemplice)
+                                            <tr>
+                                                <td class="somma">{{date('d-m-Y', strtotime($dipendenteSemplice->data_odierna))}}</td>
+                                                <td class="somma">{{$dipendenteSemplice->straordinari}}</td>
+                                            </tr>
+                                        @endforeach
+                                        </tbody>
+                                    </table>
+                            </div>
+                        </div>
+
+                        @endif
+                    </div>
+
+                </div>
+
+            <div class="accordion" id="accordionCalendario">
+                <div class="card">
+                    <div class="card-header" id="headingOne">
+                        <h2 class="mb-0">
+                            <button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse" data-target="#collapseCalendario" aria-expanded="true" aria-controls="collapseCalendario">
+                                Calendario
+                            </button>
+                        </h2>
+                    </div>
+                    <div id="collapseCalendario" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionCalendario">
+                        <div class="card-body">
+                            <form method="GET" action="{{action('App\Http\Controllers\SchedaOreController@filterStat')}}">
+                                <div class="form-row d-flex justify-content-center">
+                                    <div class="col-2">
+
+                                        <select id="inputState" class="form-control" name="mese" onchange="this.form.submit();">
+                                            <option selected>scegli il mese</option>
+                                            <option value="Gennaio">Gennaio</option>
+                                            <option value="Febbraio">Febbraio</option>
+                                            <option value="Marzo">Marzo</option>
+                                            <option value="Aprile">Aprile</option>
+                                            <option value="Maggio">Maggio</option>
+                                            <option value="Giugno">Giugno</option>
+                                            <option value="Luglio">Luglio</option>
+                                            <option value="Agosto">Agosto</option>
+                                            <option value="Settembre" id="Settembre">Settembre</option>
+                                            <option value="Ottobre">Ottobre</option>
+                                            <option value="Novembre">Novembre</option>
+                                            <option value="Dicembre">Dicembre</option>
+
+                                        </select>
+                                    </div>
                                 </div>
                             </form>
-                        </div>
 
-                        <div class="row">
-                            <p>Stai guardando il giorno  {{$data_check}}</p>
-                        </div>
-                        @if($straordinari->isEmpty())
-                            <p>Non ci sono schede presenti</p>
-                        @else
+                            <div class="row justify-content-center p-4">
+
+                                @if($calendario->isEmpty())
+                                    <p>Non sono presenti attività per questo mese</p>
+                                @else
+                                    <p>Attività relative al mese di {{$mese}}</p>
+
+                            </div>
 
 
 
 
-                            <h1> Straordinari</h1>
+
+
                             <table class="table">
                                 <thead>
                                 <tr>
-                                    <th>Nome cliente</th>
-                                    <th>Ore extra lavorative</th>
+                                    <th>Data</th>
+                                    <th>Ore</th>
+                                    <th>Note</th>
+                                    <th>Progetto di riferimento</th>
                                 </tr>
                                 </thead>
                                 <tbody>
-                                @foreach($straordinari as $dipendenteSemplice)
+
+
+                                @foreach($calendario as $calendar)
                                     <tr>
-                                        <td class="somma">{{$dipendenteSemplice->nome}}</td>
-                                        <td class="somma">{{$dipendenteSemplice->straordinari}}</td>
+                                        <td class="somma">{{date('d-m-Y', strtotime($calendar->data_odierna))}}</td>
+                                        <td class="somma">{{$calendar->ore_unitarie}}</td>
+                                        <td class="somma">{{$calendar->note}}</td>
+                                        <td class="somma">{{$calendar->nome}}</td>
+
+
                                     </tr>
                                 @endforeach
                                 </tbody>
                             </table>
+                            {{--  </div>
+                              </div>--}}
+                            @endif
+                        </div>
                     </div>
+
                 </div>
-                @endif
             </div>
         </div>
-        {{-- <p>
-            <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseCalendario" aria-expanded="false" aria-controls="collapseExample">
-                Mostra il calendario mensile
-            </button>
-        </p>--}}
-        {{-- <div class="collapse" id="collapseCalendario">
-            <div class="card card-body">
-            --}}
-        <div class="row mb-2">
-            <form method="GET" action="{{action('App\Http\Controllers\SchedaOreController@filterStat')}}">
-                <div class="form-row">
-                    <label for="inputState">Calendario</label>
-                    <select id="inputState" class="form-control" name="mese" onchange="this.form.submit();">
-                        <option selected>scegli il mese</option>
-                        <option value="Gennaio">Gennaio</option>
-                        <option value="Febbraio">Febbraio</option>
-                        <option value="Marzo">Marzo</option>
-                        <option value="Aprile">Aprile</option>
-                        <option value="Maggio">Maggio</option>
-                        <option value="Giugno">Giugno</option>
-                        <option value="Luglio">Luglio</option>
-                        <option value="Agosto">Agosto</option>
-                        <option value="Settembre" id="Settembre">Settembre</option>
-                        <option value="Ottobre">Ottobre</option>
-                        <option value="Novembre">Novembre</option>
-                        <option value="Dicembre">Dicembre</option>
-
-                    </select><a href="statistiche" class="btn btn-info">indietro</a>
-                    <button type="reset">reset</button>
-                </div>
-            </form>
-        </div>
-
-        <div class="row">
-            {{-- @if ($mese=="01")
-                <p>Attività relative al mese di Gennaio</p>
-            @elseif ($mese=="02")
-                <p>Attività relative al mese di Febbraio</p>
-            @elseif ($mese=="03")
-                <p>Attività relative al mese di Marzo</p>
-            @elseif ($mese=="04")
-                <p>Attività relative al mese di Aprile</p>
-            @elseif ($mese=="05")
-                <p>Attività relative al mese di Maggio</p>
-            @elseif ($mese=="06")
-                <p>Attività relative al mese di Giugno</p>
-            @elseif ($mese=="07")
-                <p>Attività relative al mese di Luglio</p>
-            @elseif ($mese=="08")
-                <p>Attività relative al mese di Agosto</p>
-            @elseif ($mese=="09")
-                <p>Attività relative al mese di Settembre</p>
-            @elseif ($mese=="10")
-                <p>Attività relative al mese di Ottobre</p>
-            @elseif ($mese=="11")
-                <p>Attività relative al mese di Novembre</p>
-            @elseif ($mese=="12")
-                <p>Attività relative al mese di Dicembre</p>
-
-
-            @endif--}}
-            @if($calendario->isEmpty())
-                <p>Non sono presenti attività per questo mese</p>
-            @else
-                <p>Attività relative al mese di {{$mese}}</p>
-
-        </div>
-
-
-
-
-
-
-        <table class="table">
-            <thead>
-            <tr>
-                <th>Data</th>
-                <th>Ore</th>
-                <th>Note</th>
-                <th>Progetto di riferimento</th>
-            </tr>
-            </thead>
-            <tbody>
-
-
-            @foreach($calendario as $calendar)
-                <tr>
-                    <td class="somma">{{$calendar->data_odierna}}</td>
-                    <td class="somma">{{$calendar->ore_unitarie}}</td>
-                    <td class="somma">{{$calendar->note}}</td>
-                    <td class="somma">{{$calendar->nome}}</td>
-
-
-                </tr>
-            @endforeach
-            </tbody>
-        </table>
-        {{--  </div>
-          </div>--}}
-          @endif
 
         <div id="container_grafico"></div>
 
-    </div>
-    </div>
 
 
     </div>
     <script>
 
-        var datas=<?php echo json_encode($datas)?>
+        var datas={{json_encode($datas)}}
 
         Highcharts.chart('container_grafico',{
             title:{
                 text:"Progetti a cui hai lavorato"
             },
             xAxis:{
-                categories: ['gennaio','Febbraio','Marzo','Aprile','Maggio', 'Giugno', 'Luglio','Agosto','Settembre','Ottobre','Novembre','Dicembre']
+                categories: ['Gennaio','Febbraio','Marzo','Aprile','Maggio', 'Giugno', 'Luglio','Agosto','Settembre','Ottobre','Novembre','Dicembre']
             },
             yAxis:{
                 title:{
@@ -246,7 +243,8 @@
                 ]
             }
         });
+
     </script>
 @endsection
-
+CIAO
 

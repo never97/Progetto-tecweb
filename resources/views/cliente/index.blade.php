@@ -1,55 +1,8 @@
 @extends('layouts.app')
-{{--@push('scripts')--}}
-{{--    <script>--}}
-{{--        function inviaDati(event) {--}}
-{{--            event.preventDefault();--}}
-{{--            let ragioneSociale = document.getElementsByName('ragione_sociale')[0].value;--}}
-{{--            let nomeReferente = document.getElementsByName('nome_referente')[0].value;--}}
-{{--            let cognomeReferente = document.getElementsByName('cognome_referente')[0].value;--}}
-{{--            let emailReferente = document.getElementsByName('email_referente')[0].value;--}}
-{{--            const data = {ragione_sociale: ragioneSociale, nome_referente: nomeReferente,--}}
-{{--            cognome_referente : cognomeReferente, email_referente: emailReferente};--}}
-{{--            fetch('/cliente/aggiungi', {--}}
-{{--                method: 'POST', // or 'PUT'--}}
-{{--                /*headers: {--}}
-{{--                    'Content-Type': 'application/json',--}}
-{{--                },*/--}}
-{{--                body: JSON.stringify(data),--}}
-{{--            })--}}
-{{--                .then(response => response.json())--}}
-{{--                .then(data => {--}}
-{{--                    console.log('Success:', data);--}}
-{{--                })--}}
-{{--                .catch((error) => {--}}
-{{--                    console.error('Error:', error);--}}
-{{--                });--}}
 
 
-
-{{--        }--}}
-{{--    </script>--}}
-{{--@endpush--}}
-@push('scripts')
-    <script>
-        function elimina(event) {
-            const id = event.target.getAttribute("data-id");
-            let conf = confirm("Sei sicuro di voler cancellare ?");
-            if(!conf) {
-                return;
-            }
-            fetch('cliente/delete/'+id)
-                .then(response => response.json())
-                .then(data =>{
-                    console.log(data);
-                    if(data.status === "ok") {
-                        event.target.parentElement.parentElement.remove();
-                    }});
-
-        }
-    </script>
-@endpush
 @section('content')
-    <div class="container">
+    <div class="container-fluid">
         @if ($errors->any())
             <div class="alert alert-danger">
                 <ul>
@@ -59,8 +12,9 @@
                 </ul>
             </div>
         @endif
-        <div class="row justify-content-between">
+        <div class="row justify-content-between p-4">
             <div class="col-3">
+                <h1> Cliente </h1>
                 <div class="row">
                     <div class="card w-100 p-2">
                         <form id="form-clienti" method="post" action="{{action('App\Http\Controllers\ClienteController@store')}}">
@@ -81,7 +35,7 @@
                                 <label for="email_referente">Email referente</label>
                                 <input type="text" name="email_referente" class="form-control" id="email_referente">
                             </div>
-                            <button type="submit" class="btn btn-primary">Inserisci progetto</button>
+                            <button type="submit" class="btn btn-primary">Inserisci cliente</button>
                         </form>
                     </div>
 
@@ -93,14 +47,14 @@
                     @if($listaclienti->isEmpty())
                         <p>Non ci sono clienti presenti</p>
                     @else
+                        <h3 class="p-2">Lista clienti</h3>
                         <table class="table">
                             <thead>
                             <tr>
                                 <th>Ragione sociale</th>
-                                <th>nome ref</th>
-                                <th>cognome ref</th>
-                                <th>email ref</th>
-                                <th>Elimina</th>
+                                <th>Nome referente</th>
+                                <th>Cognome referente</th>
+                                <th>Email referente</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -110,11 +64,6 @@
                                     <td>{{$cliente->nome_referente}}</td>
                                     <td>{{$cliente->cognome_referente}}</td>
                                     <td>{{$cliente->email_referente}}</td>
-
-                                    <!--<td><a href=""></a>></td>>!-->
-                                    <td><a onclick="elimina(event)" data-id="{{ $cliente->id }}" class="btn btn-danger">Elimina</a></td>
-                                    <td><a href="{{ URL::action('App\Http\Controllers\ClienteController@edit', $cliente) }}" class="btn btn-danger">Modifica</a></td>
-
 
                                 </tr>
                             @endforeach

@@ -40,8 +40,17 @@ class UserController extends Controller
     public function destroy($id)
     {
         $user = User::where('id', $id);
-        $user->delete();
-        return json_encode(['status' => 'ok']);
+        try {
+            $user->delete();
+
+            return json_encode(['status' => 'ok']);
+        }catch ( \Illuminate\Database\QueryException $e){
+            $errorCode = $e->errorInfo[1];
+            if($errorCode == 1451){
+
+                return json_encode(['status' => 'failed']);
+            }
+        }
     }
 
     public function store(Request $request)

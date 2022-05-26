@@ -10,8 +10,8 @@
     <title>{{ config('Gestione aziendale', 'Gestione aziendale') }}</title>
 
     <!-- Scripts -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="{{ asset('js/app.js') }}" defer></script>
-    <script src="https://code.highcharts.com/highcharts.src.js"></script>
 
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
@@ -28,7 +28,7 @@
     <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
         <div class="container">
             <a class="navbar-brand" href="{{ url('/') }}">
-                {{ config('Gestione aziendale', 'Gesione aziendale') }}
+                {{ config('Gestione aziendale', 'Gestione aziendale') }}
             </a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
                     aria-controls="navbarSupportedContent" aria-expanded="false"
@@ -46,12 +46,12 @@
                         </li>--}}
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                Project operations
+                                Progetto
                             </a>
                             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                                 <a class="dropdown-item" href="{{ URL::action('App\Http\Controllers\ProgettoController@index') }}">Crezione</a>
                                 <a class="dropdown-item" href="{{ URL::action('App\Http\Controllers\AssegnazioneController@index') }}">Assegnazione</a>
-                                <a class="dropdown-item" href="{{ URL::action('App\Http\Controllers\SchedaOreController@filter') }}">Statistiche</a>
+                                <a class="dropdown-item" href="{{ URL::action('App\Http\Controllers\SchedaOreController@filter') }}">Ricerca</a>
                             </div>
                         </li>
                         <li class="nav-item">
@@ -129,5 +129,6 @@
         @yield('content')
     </main>
 </div>
+
 </body>
 </html>

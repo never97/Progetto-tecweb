@@ -14,18 +14,18 @@ class UserSeeder extends Seeder
     public function run()
     {
         \DB::table('users')->insert([
-            'email' => 'admin@admin.it',
+            'email' => 'mariorossi@admin.it',
             'password' => \Hash::make('admin'),
-            'nome' => 'Admin',
-            'cognome' => 'Admin',
+            'nome' => 'Mario',
+            'cognome' => 'Rossi',
             'is_admin' => '1'
         ]);
 
         \DB::table('users')->insert([
-            'email' => 'franco@azienda.it',
-            'password' => \Hash::make('semplice'),
-            'nome' => 'Franco',
-            'cognome' => 'Rossi',
+            'email' => 'mariabianchi@dipendente.it',
+            'password' => \Hash::make('dipendente'),
+            'nome' => 'Maria',
+            'cognome' => 'Bianchi',
             'is_admin' => '0'
         ]);
     }

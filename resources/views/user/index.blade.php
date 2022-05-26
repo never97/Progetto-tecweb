@@ -17,12 +17,16 @@
                     console.log(data);
                     if(data.status === "ok") {
                         event.target.parentElement.parentElement.remove();
-                    }});
+                    }else{
+                        alert("impossibile eliminare: eliminare prima le relative dipendenze");
+
+                    }
+                });
         }
     </script>
 @endpush
 @section('content')
-    <div class="container">
+    <div class="container-fluid">
         @if ($errors->any())
             <div class="alert alert-danger">
                 <ul>
@@ -32,24 +36,31 @@
                 </ul>
             </div>
         @endif
-        <div class="row justify-content-between">
+        <div class="row justify-content-between p-4">
             <div class="col-3">
-                <div class="row">
+                <div class="row"><h1>Utente</h1>
                     <div class="card w-100 p-2">
                         <form id="form-user" method="post" action="{{action('App\Http\Controllers\UserController@store')}}">
                             @csrf
-                            <div class="form-group">
+                            <div class="form-group p-1">
                                 Ruolo
-                                <div class="row">
-                                    <div class="col">
-                                        <label for="role1">Admin</label>
-                                        <input type="radio" name="role" class="form-control-sm" id="role1" value="admin">
-                                    </div>
-                                    <div class="col">
-                                        <label for="role2">Semplice</label>
-                                        <input type="radio" name="role" class="form-control-sm" id="role2" value="std">
-                                    </div>
+                                <div class="row p-1">
+
                                 </div>
+
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="role" id="role1" value="admin" checked>
+                                    <label class="form-check-label" for="role1">
+                                        Admin
+                                    </label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="role" id="role2" value="std">
+                                    <label class="form-check-label" for="role2">
+                                        Semplice
+                                    </label>
+                                </div>
+
                             </div>
                             <div class="form-group">
                                 <label for="email">Email</label>
@@ -86,13 +97,15 @@
                     @if($listautenti->isEmpty())
                         <p>Non ci sono utenti presenti</p>
                     @else
-                        <table class="table">
+                        <h3 class="p-2">Lista utenti</h3>
+                        <table class="table text-center">
                             <thead>
                             <tr>
                                 <th>Nome</th>
                                 <th>Cognome</th>
                                 <th>Email</th>
                                 <th>Ruolo</th>
+                                <th>Modifica</th>
                                 <th>Elimina</th>
                             </tr>
                             </thead>
@@ -104,8 +117,8 @@
                                     <td>{{$user->email}}</td>
                                     <td>{{$user->is_admin == 0 ? "Utente semplice" : "Amministratore"}}</td>
                                     <!--<td><a href=""></a>></td>>!-->
-                                    <td><a onclick="elimina(event)" data-id="{{$user->id}}" class="btn btn-danger">Elimina</a></td>
-                                    <td><a href="{{ URL::action('App\Http\Controllers\UserController@edit', $user) }}" class="btn btn-danger">Modifica</a></td>
+                                    <td><a href="{{ URL::action('App\Http\Controllers\UserController@edit', $user) }}" ><i class="bi bi-pencil-square" style="color:#198754;"></i></a></td>
+                                    <td><a onclick="elimina(event)" data-id="{{$user->id}}" class="bi bi-x-lg" style="color: #dc3545;"></a></td>
 
 
                                 </tr>
